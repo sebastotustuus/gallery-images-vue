@@ -5,6 +5,7 @@
       "name": "gallery-images-vue",
       "dependencies": {
         "@primeuix/themes": "^1.0.3",
+        "@tanstack/vue-virtual": "^3.13.6",
         "primevue": "^4.3.3",
         "tailwindcss-primeui": "^0.6.1",
         "vue": "^3.5.13",
