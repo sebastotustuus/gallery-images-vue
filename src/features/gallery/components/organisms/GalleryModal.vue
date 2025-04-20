@@ -1,59 +1,19 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
 import type { ImageProps } from '../../domain/entities/Image'
+import { useImageAuthor } from '../../composables/useImageAuthor'
+import { useImageDimensions } from '../../composables/useImageDimensions'
+import { useImageActions } from '../../composables/useImageActions'
+import { useModalVisibility } from '../../composables/useModalVisibility'
 
 const props = defineProps<{ open: boolean; image: ImageProps; onClose: () => void }>()
-const visible = ref(props.open)
 
-const authorInitials = computed(() => {
-  if (!props.image?.author) return ''
-
-  const nameParts = props.image.author.split(' ')
-  if (nameParts.length === 1) {
-    return nameParts[0].charAt(0).toUpperCase()
-  } else {
-    return (nameParts[0].charAt(0) + nameParts[1].charAt(0)).toUpperCase()
-  }
-})
-
-const dimensions = computed(() => {
-  if (!props.image) return { width: 0, height: 0 }
-  const { width, height } = props.image
-  return { width, height }
-})
-
-const ratioInfo = computed(() => {
-  return Math.round((dimensions.value.width / dimensions.value.height) * 10) / 10
-})
-
-const openUrl = (url: string) => {
-  window.open(url, '_blank', 'noopener,noreferrer')
-}
-
-const downloadImage = (url: string) => {
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `image-${props.image?.id || 'download'}.jpg`
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-}
-
-watch(
-  () => props.open,
-  (val) => {
-    visible.value = val
-  },
-  { immediate: true }
-)
-
-function handleHide() {
-  visible.value = false
-  props.onClose()
-}
+const { visible, handleHide } = useModalVisibility(props.open, props.onClose)
+const { authorInitials } = useImageAuthor(props.image)
+const { dimensions, ratioInfo } = useImageDimensions(props.image)
+const { openUrl, downloadImage } = useImageActions()
 </script>
 
 <template>
@@ -83,23 +43,23 @@ function handleHide() {
               shape="circle"
               size="large"
               class="author-avatar"
-              style="background-color: #6366F1; color: white"
+              style="background-color: #6366f1; color: white"
             />
             <div class="author-info">
               <div class="author-name">{{ props.image.author }}</div>
               <div class="publication-info">Publicado en Unsplash</div>
             </div>
           </div>
-          <Button 
-            icon="pi pi-times" 
-            class="close-button" 
-            @click="handleHide" 
-            aria-label="Close" 
+          <Button
+            icon="pi pi-times"
+            class="close-button"
+            @click="handleHide"
+            aria-label="Close"
             text
             rounded
           />
         </div>
-        
+
         <div class="specs-section">
           <h4 class="section-title">Información técnica</h4>
           <div class="spec-row">
@@ -112,7 +72,7 @@ function handleHide() {
             </div>
           </div>
         </div>
-        
+
         <div class="actions-section">
           <h4 class="section-title">Acciones</h4>
           <div class="action-buttons">
@@ -122,7 +82,7 @@ function handleHide() {
               class="p-button p-button-info p-button-outlined action-button"
               @click="openUrl(props.image.url)"
             />
-            
+
             <Button
               label="Descargar"
               icon="pi pi-download"
@@ -131,7 +91,7 @@ function handleHide() {
             />
           </div>
         </div>
-        
+
         <div class="additional-info">
           <p class="info-note">
             <i class="pi pi-info-circle"></i>
@@ -163,7 +123,7 @@ function handleHide() {
 }
 
 .close-button {
-  color: #6366F1 !important;
+  color: #6366f1 !important;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -174,7 +134,7 @@ function handleHide() {
 }
 
 .close-button:hover {
-  color: #6366F1 !important;
+  color: #6366f1 !important;
 }
 
 .image-container {
@@ -268,14 +228,14 @@ function handleHide() {
   display: inline-block;
   width: 14px;
   height: 14px;
-  background-color: #6366F1;
+  background-color: #6366f1;
   border-radius: 50%;
   margin-right: 8px;
   transform: scale(0.6);
 }
 
 .specs-list {
-  background-color: #F8F9FC;
+  background-color: #f8f9fc;
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 16px;
@@ -299,7 +259,7 @@ function handleHide() {
 .spec-label {
   font-size: 12px;
   font-weight: 600;
-  color: #6366F1;
+  color: #6366f1;
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -312,8 +272,8 @@ function handleHide() {
 }
 
 .id-chip {
-  background-color: #EBEEFF !important;
-  color: #6366F1 !important;
+  background-color: #ebeeff !important;
+  color: #6366f1 !important;
   font-weight: 500;
   border-radius: 4px;
   padding: 2px 8px;
@@ -346,24 +306,26 @@ function handleHide() {
   justify-content: center;
   height: 38px;
   font-weight: 500;
-  background: #6366F1;
+  background: #6366f1;
   color: #fff;
-  border: 1px solid #6366F1;
+  border: 1px solid #6366f1;
   z-index: 1;
   border-radius: 10px;
   display: flex;
   flex-flow: row;
   gap: 0.3rem;
-  transition: background 0.15s, color 0.15s, border 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border 0.15s;
 }
 
 .action-button:hover,
 .action-button:focus {
-  background: #6366F1 !important;
+  background: #6366f1 !important;
   color: #fff !important;
-  border: 1px solid #6366F1 !important;
+  border: 1px solid #6366f1 !important;
 }
-
 
 .action-button .pi {
   color: #fff;
@@ -380,32 +342,34 @@ function handleHide() {
 
 .p-button-outlined.action-button .pi {
   margin-right: 0.5em;
-  color: #6366F1;
+  color: #6366f1;
 }
 
 .p-button-outlined.action-button:hover .pi,
 .p-button-outlined.action-button:focus .pi {
-  color: #6366F1 !important;
+  color: #6366f1 !important;
 }
-
 
 .p-button-outlined.action-button {
   background: #fff;
-  color: #6366F1;
-  border: 1.5px solid #6366F1;
+  color: #6366f1;
+  border: 1.5px solid #6366f1;
   border-radius: 10px;
-  transition: background 0.15s, color 0.15s, border 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border 0.15s;
 }
 
 .p-button-outlined.action-button:hover,
 .p-button-outlined.action-button:focus {
   background: #fff !important;
-  color: #6366F1 !important;
-  border: 1.5px solid #6366F1 !important;
+  color: #6366f1 !important;
+  border: 1.5px solid #6366f1 !important;
 }
 
 .p-button-outlined.action-button .pi {
-  color: #6366F1;
+  color: #6366f1;
 }
 
 .additional-info {
@@ -426,7 +390,7 @@ function handleHide() {
 }
 
 .info-note i {
-  color: #6366F1;
+  color: #6366f1;
   font-size: 16px;
 }
 
@@ -471,7 +435,7 @@ function handleHide() {
     align-items: center;
     justify-content: center;
   }
-  
+
   .image-container img {
     max-width: 100%;
     max-height: 80vh;
