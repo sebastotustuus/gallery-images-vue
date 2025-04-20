@@ -8,7 +8,7 @@ defineProps<{ images: ImageProps[] }>()
 <template>
   <div
   class="
-    columns-1 sm:columns-2 lg:columns-3 xl:columns-4 
+    columns-1 sm:columns-2 lg:columns-3
     column-gap-4 gap-y-4
   ">
   <GalleryImage
