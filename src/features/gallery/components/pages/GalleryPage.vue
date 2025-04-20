@@ -25,8 +25,9 @@ function closeModal() {
   <div class="flex flex-col justify-center items-center">
     <h1 v-once class="text-3xl font-bold mb-6">Image Gallery Collection</h1>
     <GalleryGrid :images="images ?? []" @select="onSelect" />
+    <!-- Siempre renderizar el modal pero controlar su visibilidad con la prop -->    
     <GalleryModal
-      v-if="modal.isOpen.value && selectedImage"
+      v-if="selectedImage"
       :open="modal.isOpen.value"
       :image="selectedImage"
       :onClose="closeModal"
