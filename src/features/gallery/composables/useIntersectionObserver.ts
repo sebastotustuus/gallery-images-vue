@@ -1,4 +1,3 @@
-// Composable: useIntersectionObserver for lazy loading
 import { ref, onMounted, onUnmounted } from 'vue'
 
 export function useIntersectionObserver(callback: () => void, options: IntersectionObserverInit = {}) {

@@ -1,4 +1,3 @@
-// Composable for modal state management
 import { ref } from 'vue'
 
 export function useModal() {

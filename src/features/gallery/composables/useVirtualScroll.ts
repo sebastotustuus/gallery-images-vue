@@ -1,58 +1,53 @@
-import { ref, onMounted, onUnmounted } from 'vue'
-import type { Ref } from 'vue'
+import { ref, onMounted, onUnmounted, type Ref } from 'vue'
 import type { Position } from './types'
+
+const DEFAULT_OVERSCAN = 800
+
+type RecycleMode = 'symmetric' | 'top-only' | 'none'
 
 export function useVirtualScroll<T extends { id: string }>(
   items: Ref<T[]>,
   getPositionById: (id: string) => Position | undefined,
-  options: { 
+  options: {
     useWindowScroll?: boolean,
-    recycleMode?: 'symmetric' | 'top-only' | 'none'
+    recycleMode?: RecycleMode,
+    overscan?: number
   } = {}
 ) {
+  const {
+    useWindowScroll = false,
+    recycleMode = 'symmetric',
+    overscan = DEFAULT_OVERSCAN,
+  } = options
+
   const scrollPosition = ref(0)
   const viewportHeight = ref(0)
-  
   const scrollContainerRef = ref<HTMLElement | null>(null)
-  const useWindowScroll = options.useWindowScroll || false
-  const recycleMode = options.recycleMode || 'symmetric'
-
-  // Para el modo de reciclaje asimétrico, necesitamos rastrear los elementos ya renderizados
-  const renderedItems = ref(new Set<number>())
+  const renderedIndexes = ref(new Set<number>())
   const lastScrollPosition = ref(0)
-  
-  const handleScroll = () => {
-    let newScrollPosition = 0;
-    
+
+  function handleScroll(): void {
+    let newScroll = 0
+
     if (useWindowScroll) {
-      newScrollPosition = window.scrollY
-      scrollPosition.value = newScrollPosition
+      newScroll = window.scrollY
       viewportHeight.value = window.innerHeight
     } else if (scrollContainerRef.value) {
-      newScrollPosition = scrollContainerRef.value.scrollTop
-      scrollPosition.value = newScrollPosition
+      newScroll = scrollContainerRef.value.scrollTop
       viewportHeight.value = scrollContainerRef.value.clientHeight
     }
-    
-    // Determinar la dirección del scroll para el reciclaje asimétrico
+    scrollPosition.value = newScroll
+
     if (recycleMode === 'top-only') {
-      const isScrollingDown = newScrollPosition > lastScrollPosition.value
-      
-      // Si estamos haciendo scroll hacia abajo, rastreamos la posición actual
-      lastScrollPosition.value = newScrollPosition
-      
-      // En scrolling hacia abajo, simplemente dejamos que el algoritmo regular maneje la visibilidad
-      // En scrolling hacia arriba, no eliminamos los elementos ya renderizados
-      if (isScrollingDown) {
-        // Resetear el conjunto de elementos renderizados cuando el usuario llega al tope superior
-        if (newScrollPosition <= 10) {
-          renderedItems.value.clear()
-        }
+      const isScrollingDown = newScroll > lastScrollPosition.value
+      lastScrollPosition.value = newScroll
+      if (isScrollingDown && newScroll <= 10) {
+        renderedIndexes.value.clear()
       }
     }
   }
-  
-  const setupScrollListeners = () => {
+
+  function setupScrollListeners(): void {
     if (useWindowScroll) {
       viewportHeight.value = window.innerHeight
       window.addEventListener('scroll', handleScroll)
@@ -60,70 +55,58 @@ export function useVirtualScroll<T extends { id: string }>(
       viewportHeight.value = scrollContainerRef.value.clientHeight
       scrollContainerRef.value.addEventListener('scroll', handleScroll)
     }
-    
-    // Llamada inicial para configurar valores
     handleScroll()
   }
-  
-  const cleanupScrollListeners = () => {
+
+  function cleanupScrollListeners(): void {
     if (useWindowScroll) {
       window.removeEventListener('scroll', handleScroll)
     } else if (scrollContainerRef.value) {
       scrollContainerRef.value.removeEventListener('scroll', handleScroll)
     }
   }
-  
-  const isItemInViewport = (index: number): boolean => {
+
+  function isItemInViewport(index: number): boolean {
     const item = items.value[index]
     if (!item) return false
-    
-    const position = getPositionById(item.id.toString())
+
+    const position = getPositionById(item.id)
     if (!position) return false
-    
-    // Manejar modos de reciclaje especiales
-    if (recycleMode === 'none') {
-      return true // No reciclar - mostrar todos los elementos siempre
+
+    if (recycleMode === 'none') return true
+
+    if (recycleMode === 'top-only' && renderedIndexes.value.has(index)) {
+      return true
     }
-    
-    if (recycleMode === 'top-only') {
-      // Si ya se renderizó este elemento, siempre mostrarlo
-      if (renderedItems.value.has(index)) {
-        return true
-      }
-    }
-    
-    const overscan = 800
-    let itemTop = position.y
-    let itemBottom = position.y + position.height
-    
-    // Si usamos scroll de ventana, necesitamos considerar la posición del contenedor
+
+    let { y: itemTop, height } = position
+    let itemBottom = itemTop + height
+
     if (useWindowScroll && scrollContainerRef.value) {
       const containerRect = scrollContainerRef.value.getBoundingClientRect()
-      itemTop += containerRect.top + window.scrollY
-      itemBottom += containerRect.top + window.scrollY
+      const offset = containerRect.top + window.scrollY
+      itemTop += offset
+      itemBottom += offset
     }
-    
-    const isVisible = (
-      (itemBottom >= scrollPosition.value - overscan) && 
-      (itemTop <= scrollPosition.value + viewportHeight.value + overscan)
-    )
-    
-    // Si el elemento es visible y estamos en modo de reciclaje top-only, añadirlo al conjunto
-    if (isVisible && recycleMode === 'top-only') {
-      renderedItems.value.add(index)
+
+    const visible =
+      itemBottom >= scrollPosition.value - overscan &&
+      itemTop <= scrollPosition.value + viewportHeight.value + overscan
+
+    if (visible && recycleMode === 'top-only') {
+      renderedIndexes.value.add(index)
     }
-    
-    return isVisible
+
+    return visible
   }
-  
-  onMounted(setupScrollListeners)
-  onUnmounted(cleanupScrollListeners)
-  
-  // Método para resetear el estado del virtualizador (útil cuando cambian las imágenes)
-  const resetVirtualizer = () => {
-    renderedItems.value.clear()
+
+  function resetVirtualizer(): void {
+    renderedIndexes.value.clear()
     lastScrollPosition.value = 0
   }
+
+  onMounted(setupScrollListeners)
+  onUnmounted(cleanupScrollListeners)
 
   return {
     scrollContainerRef,
@@ -131,6 +114,6 @@ export function useVirtualScroll<T extends { id: string }>(
     viewportHeight,
     isItemInViewport,
     handleScroll,
-    resetVirtualizer
+    resetVirtualizer,
   }
 }
