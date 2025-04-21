@@ -30,6 +30,7 @@ function closeModal() {
       v-if="selectedImage"
       :open="modal.isOpen.value"
       :image="selectedImage"
+      :images="images ?? []"
       :onClose="closeModal"
     />
   </div>

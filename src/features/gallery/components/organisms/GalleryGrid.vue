@@ -56,7 +56,7 @@ watch(
     
     resetLoading()
     clearCache()
-    resetVirtualizer() // Importante: resetear el virtualizador cuando cambian las imágenes
+    resetVirtualizer()
     
     if (parentRef.value) {
       await calculateLayout(newImages, parentRef.value.offsetWidth)

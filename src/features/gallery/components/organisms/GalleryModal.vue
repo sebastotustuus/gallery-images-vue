@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, watch, computed } from 'vue'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
@@ -8,12 +9,53 @@ import { useImageDimensions } from '../../composables/useImageDimensions'
 import { useImageActions } from '../../composables/useImageActions'
 import { useModalVisibility } from '../../composables/useModalVisibility'
 
-const props = defineProps<{ open: boolean; image: ImageProps; onClose: () => void }>()
+const props = defineProps<{ 
+  open: boolean; 
+  image: ImageProps; 
+  images: ImageProps[];
+  onClose: () => void 
+}>()
 
 const { visible, handleHide } = useModalVisibility(props.open, props.onClose)
-const { authorInitials } = useImageAuthor(props.image)
-const { dimensions, ratioInfo } = useImageDimensions(props.image)
 const { openUrl, downloadImage } = useImageActions()
+
+const currentIndex = ref(0)
+const currentImage = ref<ImageProps>(props.image)
+
+const hasPrevious = computed(() => currentIndex.value > 0)
+const hasNext = computed(() => currentIndex.value < props.images.length - 1)
+
+const authorInitials = computed(() => {
+  return useImageAuthor(currentImage.value).authorInitials.value
+})
+const dimensions = computed(() => {
+  return useImageDimensions(currentImage.value).dimensions.value
+})
+const ratioInfo = computed(() => {
+  return useImageDimensions(currentImage.value).ratioInfo.value
+})
+
+watch(() => props.image, (newImage) => {
+  const index = props.images.findIndex(img => img.id === newImage.id)
+  if (index !== -1) {
+    currentIndex.value = index
+    currentImage.value = props.images[index]
+  }
+}, { immediate: true })
+
+function goToPrevious() {
+  if (hasPrevious.value) {
+    currentIndex.value--
+    currentImage.value = props.images[currentIndex.value]
+  }
+}
+
+function goToNext() {
+  if (hasNext.value) {
+    currentIndex.value++
+    currentImage.value = props.images[currentIndex.value]
+  }
+}
 </script>
 
 <template>
@@ -27,13 +69,34 @@ const { openUrl, downloadImage } = useImageActions()
     class="image-detail-modal"
   >
     <div class="modal-content">
+      <button 
+        v-if="hasPrevious" 
+        @click="goToPrevious" 
+        class="nav-button nav-prev" 
+        aria-label="Imagen anterior"
+      >
+        <i class="pi pi-chevron-left"></i>
+      </button>
+
       <div class="image-container">
-        <img
-          :src="props.image.download_url"
-          :alt="`Image by ${props.image.author}`"
-          loading="lazy"
-        />
+        <transition name="fade" mode="out-in">
+          <img
+            :key="currentImage.id"
+            :src="currentImage.download_url"
+            :alt="`Image by ${currentImage.author}`"
+            loading="lazy"
+          />
+        </transition>
       </div>
+      
+      <button 
+        v-if="hasNext" 
+        @click="goToNext" 
+        class="nav-button nav-next" 
+        aria-label="Imagen siguiente"
+      >
+        <i class="pi pi-chevron-right"></i>
+      </button>
 
       <div class="info-container">
         <div class="modal-header">
@@ -46,7 +109,7 @@ const { openUrl, downloadImage } = useImageActions()
               style="background-color: #6366f1; color: white"
             />
             <div class="author-info">
-              <div class="author-name">{{ props.image.author }}</div>
+              <div class="author-name">{{ currentImage.author }}</div>
               <div class="publication-info">Publicado en Unsplash</div>
             </div>
           </div>
@@ -80,14 +143,14 @@ const { openUrl, downloadImage } = useImageActions()
               label="Ver Original"
               icon="pi pi-external-link"
               class="p-button p-button-info p-button-outlined action-button"
-              @click="openUrl(props.image.url)"
+              @click="openUrl(currentImage.url)"
             />
 
             <Button
               label="Descargar"
               icon="pi pi-download"
               class="p-button p-button-success action-button"
-              @click="downloadImage(props.image.download_url)"
+              @click="downloadImage(currentImage.download_url)"
             />
           </div>
         </div>
@@ -452,5 +515,72 @@ const { openUrl, downloadImage } = useImageActions()
     z-index: 1;
     border-left: 1px solid #eaeaea;
   }
+}
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.7);
+  color: #6366f1;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.nav-button:hover,
+.nav-button:focus {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #4f46e5;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-prev {
+  left: 16px;
+}
+
+.nav-next {
+  right: 16px;
+}
+
+.nav-button i {
+  font-size: 1.2rem;
+}
+
+@media (min-width: 768px) {
+  .nav-button {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .nav-prev {
+    left: 16px;
+  }
+  
+  .nav-next {
+    left: calc(100% - 350px - 64px);
+  }
+  
+  .nav-button i {
+    font-size: 1.4rem;
+  }
+}
+
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.15s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
