@@ -67,10 +67,10 @@ watch(
 </script>
 
 <template>
-  <div class="masonry-container">
-    <div v-if="loading" class="container-spinner">
-      <div class="spinner-wrapper">
-        <div class="custom-spinner">
+  <div class="w-full flex flex-col min-h-[200px]">
+    <div v-if="loading" class="w-full flex justify-center py-[30px]">
+      <div class="flex justify-center items-center z-10 w-full">
+        <div class="p-[15px] rounded-full flex justify-center items-center">
           <div class="spinner-circle"></div>
         </div>
       </div>
@@ -78,29 +78,27 @@ watch(
 
     <div 
       ref="parentRef" 
-      class="container-main-grid" 
+      class="relative w-full grow overflow-visible" 
       :style="{ height: containerHeight, position: 'relative' }"
       @scroll="handleScroll"
     >
       <div
+        class="w-full relative"
         :style="{
           height: containerHeight,
-          width: '100%',
           position: 'relative'
         }"
       >
         <template v-for="(img, index) in props.images" :key="img.id">
           <div
             v-if="isItemInViewport(index) && getPositionById(img.id)"
-            class="image-item"
+            class="[will-change:transform,opacity] absolute"
+            :class="{ 'opacity-0 translate-y-[10px]': loading, 'opacity-100 translate-y-0': !loading }"
             :style="{
-              position: 'absolute',
               left: `${getPositionById(img.id)?.x || 0}px`,
               top: `${getPositionById(img.id)?.y || 0}px`,
               width: `${getPositionById(img.id)?.width || 0}px`,
               height: `${getPositionById(img.id)?.height || 0}px`,
-              transform: loading ? 'translateY(10px)' : 'translateY(0)',
-              opacity: loading ? 0 : 1,
               transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
               transitionDelay: `${index * 30}ms`,
             }"
@@ -119,37 +117,6 @@ watch(
 </template>
 
 <style scoped>
-.masonry-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  min-height: 200px;
-}
-
-.container-spinner {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding-top: 30px;
-  padding-bottom: 30px;
-}
-
-.spinner-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-  width: 100%;
-}
-
-.custom-spinner {
-  padding: 15px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .spinner-circle {
   width: 40px;
   height: 40px;
@@ -162,16 +129,5 @@ watch(
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-.container-main-grid {
-  position: relative;
-  width: 100%;
-  flex-grow: 1;
-  overflow: unset;
-}
-
-.image-item {
-  will-change: transform, opacity;
 }
 </style>
