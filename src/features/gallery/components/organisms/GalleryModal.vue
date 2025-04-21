@@ -77,7 +77,7 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
               shape="circle"
               size="large"
               class="author-avatar"
-              style="background-color: #6366f1; color: white"
+              style="background-color: var(--color-primary); color: var(--color-text-inverted)"
             />
             <div class="author-info">
               <div class="author-name">{{ currentImage.author }}</div>
@@ -153,11 +153,11 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
   flex-direction: column;
   border-radius: 16px;
   overflow: hidden;
-  background-color: white;
+  background-color: var(--color-bg-primary);
 }
 
 .close-button {
-  color: #6366f1 !important;
+  color: var(--color-primary) !important;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -168,12 +168,12 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 }
 
 .close-button:hover {
-  color: #6366f1 !important;
+  color: var(--color-primary) !important;
 }
 
 .image-container {
   width: 100%;
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-secondary);
   display: flex;
   justify-content: start;
   align-items: center;
@@ -191,7 +191,7 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 
 .info-container {
   padding: 24px;
-  background-color: white;
+  background-color: var(--color-bg-primary);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -203,7 +203,7 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
   align-items: center;
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .author-section {
@@ -228,14 +228,14 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 .author-name {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: -5px;
   letter-spacing: 0.2px;
 }
 
 .publication-info {
   font-size: 13px;
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -250,7 +250,7 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 .section-title {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -269,7 +269,7 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 }
 
 .specs-list {
-  background-color: #f8f9fc;
+  background-color: var(--color-bg-tertiary);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 16px;
@@ -293,21 +293,21 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 .spec-label {
   font-size: 12px;
   font-weight: 600;
-  color: #6366f1;
+  color: var(--color-primary);
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .spec-value {
-  color: #333;
+  color: var(--color-text-primary);
   display: flex;
   flex-direction: column;
 }
 
 .id-chip {
-  background-color: #ebeeff !important;
-  color: #6366f1 !important;
+  background-color: var(--color-primary-light) !important;
+  color: var(--color-primary) !important;
   font-weight: 500;
   border-radius: 4px;
   padding: 2px 8px;
@@ -321,7 +321,7 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 
 .dimension-ratio {
   font-size: 12px;
-  color: #888;
+  color: var(--color-text-tertiary);
   margin-top: 4px;
 }
 
@@ -340,9 +340,9 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
   justify-content: center;
   height: 38px;
   font-weight: 500;
-  background: #6366f1;
-  color: #fff;
-  border: 1px solid #6366f1;
+  background: var(--color-primary);
+  color: var(--color-text-inverted);
+  border: 1px solid var(--color-primary);
   z-index: 1;
   border-radius: 10px;
   display: flex;
@@ -357,12 +357,12 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 .action-button:hover,
 .action-button:focus {
   background: #6366f1 !important;
-  color: #fff !important;
+  color: var(--color-text-inverted) !important;
   border: 1px solid #6366f1 !important;
 }
 
 .action-button .pi {
-  color: #fff;
+  color: var(--color-text-inverted);
   opacity: 1;
   margin-right: 0.5em;
   font-size: 1.1em;
@@ -371,23 +371,23 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 
 .action-button:hover .pi,
 .action-button:focus .pi {
-  color: #fff !important;
+  color: var(--color-text-inverted) !important;
 }
 
 .p-button-outlined.action-button .pi {
   margin-right: 0.5em;
-  color: #6366f1;
+  color: var(--color-primary);
 }
 
 .p-button-outlined.action-button:hover .pi,
 .p-button-outlined.action-button:focus .pi {
-  color: #6366f1 !important;
+  color: var(--color-primary) !important;
 }
 
 .p-button-outlined.action-button {
-  background: #fff;
-  color: #6366f1;
-  border: 1.5px solid #6366f1;
+  background: var(--color-bg-primary);
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
   border-radius: 10px;
   transition:
     background 0.15s,
@@ -397,34 +397,34 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 
 .p-button-outlined.action-button:hover,
 .p-button-outlined.action-button:focus {
-  background: #fff !important;
-  color: #6366f1 !important;
-  border: 1.5px solid #6366f1 !important;
+  background: var(--color-bg-primary) !important;
+  color: var(--color-primary) !important;
+  border: 1.5px solid var(--color-primary) !important;
 }
 
 .p-button-outlined.action-button .pi {
-  color: #6366f1;
+  color: var(--color-primary);
 }
 
 .additional-info {
   margin-top: auto;
   padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--color-divider);
 }
 
 .info-note {
   font-size: 13px;
-  color: #666;
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: rgba(99, 102, 241, 0.05);
+  background-color: var(--color-primary-bg);
   padding: 12px;
   border-radius: 8px;
 }
 
 .info-note i {
-  color: #6366f1;
+  color: var(--color-primary);
   font-size: 16px;
 }
 
@@ -440,11 +440,11 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 }
 
 .detail-value {
-  color: #555;
+  color: var(--color-text-secondary);
 }
 
 .detail-link {
-  color: #0095f6;
+  color: var(--color-link);
   text-decoration: none;
 }
 
@@ -464,7 +464,7 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
     max-height: 80vh;
     width: calc(100% - 350px);
     position: relative;
-    background-color: #000;
+    background-color: var(--color-bg-dark);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -484,15 +484,15 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
     max-height: 80vh;
     position: relative;
     z-index: 1;
-    border-left: 1px solid #eaeaea;
+    border-left: 1px solid var(--color-border);
   }
 }
 .nav-button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.7);
-  color: #6366f1;
+  background-color: var(--color-bg-light);
+  color: var(--color-primary);
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -508,8 +508,8 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 
 .nav-button:hover,
 .nav-button:focus {
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #4f46e5;
+  background-color: var(--color-bg-lighter);
+  color: var(--color-primary-dark);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 

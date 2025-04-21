@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useModal } from '../../composables/useModal'
 import GalleryGrid from '../organisms/GalleryGrid.vue'
 import GalleryModal from '../organisms/GalleryModal.vue'
+import MainLayout from '../../../../layouts/MainLayout.vue'
 import type { ImageProps } from '../../domain/entities/Image'
 import { useGallery } from '../../composables/useGallery'
 
@@ -22,16 +23,23 @@ function closeModal() {
 </script>
 
 <template>
-  <div class="flex flex-col justify-center items-center">
-    <h1 v-once class="text-3xl font-bold mb-6">Image Gallery Collection</h1>
-    <GalleryGrid :images="images ?? []" @select="onSelect" />
-    <!-- Siempre renderizar el modal pero controlar su visibilidad con la prop -->    
-    <GalleryModal
-      v-if="selectedImage"
-      :open="modal.isOpen.value"
-      :image="selectedImage"
-      :images="images ?? []"
-      :onClose="closeModal"
-    />
-  </div>
+  <MainLayout title="Galería de Imágenes">
+    <div class="gallery-container">
+      <GalleryGrid :images="images ?? []" @select="onSelect" />
+      <GalleryModal
+        v-if="selectedImage"
+        :open="modal.isOpen.value"
+        :image="selectedImage"
+        :images="images ?? []"
+        :onClose="closeModal"
+      />
+    </div>
+  </MainLayout>
 </template>
+
+<style scoped>
+.gallery-container {
+  width: 100%;
+  padding-bottom: 2rem;
+}
+</style>

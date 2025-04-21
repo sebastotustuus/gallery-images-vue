@@ -68,8 +68,8 @@ watch(
 
 <template>
   <div class="masonry-container">
-    <div class="container-spinner">
-      <div v-if="loading" class="spinner-wrapper">
+    <div v-if="loading" class="container-spinner">
+      <div class="spinner-wrapper">
         <div class="custom-spinner">
           <div class="spinner-circle"></div>
         </div>
