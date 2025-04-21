@@ -1,13 +1,19 @@
-import type { ImageProps } from '../../domain/entities/Image'
+import { Image, type ImageProps } from '../../domain/entities/Image'
 
 export interface GalleryRepository {
-  fetchImages(limit: number): Promise<ImageProps[]>;
+  fetchImages(limit: number): Promise<Image[]>;
 }
 
 export class PicsumGalleryRepository implements GalleryRepository {
-  async fetchImages(limit: number): Promise<ImageProps[]> {
-    const res = await fetch(`https://picsum.photos/v2/list?limit=${limit}`)
-    if (!res.ok) throw new Error('Failed to fetch images')
-    return await res.json()
+  async fetchImages(limit: number): Promise<Image[]> {
+    try {
+      const res = await fetch(`https://picsum.photos/v2/list?limit=${limit}`)
+      if (!res.ok) return []
+      const imagesData = await res.json() as ImageProps[]
+      return imagesData.map(imageData => new Image(imageData))
+    } catch (error) {
+      console.error('Error fetching gallery images:', error)
+      return []
+    }
   }
 }
