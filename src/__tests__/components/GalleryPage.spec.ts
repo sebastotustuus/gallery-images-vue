@@ -2,10 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render } from '@testing-library/vue'
 import GalleryPage from '../../features/gallery/components/pages/GalleryPage.vue'
 
-// Definición global del mockOpen para estar disponible en todo el archivo
 const mockOpen = vi.fn()
 
-// Mock de los componentes y composables con vi.mock
 vi.mock('../../features/gallery/composables/useGallery', () => ({
   useGallery: () => ({
     data: {
