@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
 import type { ImageProps } from '../../domain/entities/Image'
-import { useImageAuthor } from '../../composables/useImageAuthor'
-import { useImageDimensions } from '../../composables/useImageDimensions'
 import { useImageActions } from '../../composables/useImageActions'
 import { useModalVisibility } from '../../composables/useModalVisibility'
+import { useImageNavigation } from '../../composables/useImageNavigation'
+import { useImageDetails } from '../../composables/useImageDetails'
 
 const props = defineProps<{ 
   open: boolean; 
@@ -19,43 +18,15 @@ const props = defineProps<{
 const { visible, handleHide } = useModalVisibility(props.open, props.onClose)
 const { openUrl, downloadImage } = useImageActions()
 
-const currentIndex = ref(0)
-const currentImage = ref<ImageProps>(props.image)
+const {
+  currentImage,
+  hasPrevious,
+  hasNext,
+  goToPrevious,
+  goToNext
+} = useImageNavigation(props.image, props.images)
 
-const hasPrevious = computed(() => currentIndex.value > 0)
-const hasNext = computed(() => currentIndex.value < props.images.length - 1)
-
-const authorInitials = computed(() => {
-  return useImageAuthor(currentImage.value).authorInitials.value
-})
-const dimensions = computed(() => {
-  return useImageDimensions(currentImage.value).dimensions.value
-})
-const ratioInfo = computed(() => {
-  return useImageDimensions(currentImage.value).ratioInfo.value
-})
-
-watch(() => props.image, (newImage) => {
-  const index = props.images.findIndex(img => img.id === newImage.id)
-  if (index !== -1) {
-    currentIndex.value = index
-    currentImage.value = props.images[index]
-  }
-}, { immediate: true })
-
-function goToPrevious() {
-  if (hasPrevious.value) {
-    currentIndex.value--
-    currentImage.value = props.images[currentIndex.value]
-  }
-}
-
-function goToNext() {
-  if (hasNext.value) {
-    currentIndex.value++
-    currentImage.value = props.images[currentIndex.value]
-  }
-}
+const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 </script>
 
 <template>
