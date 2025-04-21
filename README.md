@@ -1,5 +1,7 @@
 # Gallery Images Vue
 
+> **Important Note**: The name "SpectrumVision" and any branding elements in this application are completely fictional and created solely for the purpose of this exercise. This project is intended as a technical demonstration of UI/UX concepts and Vue.js implementation skills only.
+
 A high-performance image gallery built with Vue 3, TypeScript, and a custom masonry layout implementation. This project features an optimized virtualization system that only renders visible elements, completely eliminates layout jumps during image loading, and provides a smooth, responsive user experience.
 
 ![Gallery Screenshot](./docs/gallery-screenshot.png)

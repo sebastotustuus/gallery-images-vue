@@ -1,5 +1,7 @@
 # Gallery Images Vue - Architecture Documentation
 
+> **Important Note**: The name "SpectrumVision" and any branding elements in this application are completely fictional and created solely for the purpose of this exercise. This project is intended as a technical demonstration of UI/UX concepts and Vue.js implementation skills only.
+
 This document details the architecture, design decisions, and implementation strategies used in the Gallery Images Vue application.
 
 ## Table of Contents
