@@ -1,4 +1,3 @@
-// Base ValueObject abstract class for DDD
 export abstract class ValueObject<T> {
   protected readonly props: T;
   constructor(props: T) {

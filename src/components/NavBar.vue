@@ -26,7 +26,7 @@ const appName = "SpectrumVision";
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   box-shadow: 
     0 4px 6px -1px rgba(0, 0, 0, 0.1), 
     0 2px 4px -1px rgba(0, 0, 0, 0.06);

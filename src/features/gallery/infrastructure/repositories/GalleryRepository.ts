@@ -1,4 +1,3 @@
-// Infrastructure: GalleryRepository for Picsum API
 import type { ImageProps } from '../../domain/entities/Image'
 
 export interface GalleryRepository {

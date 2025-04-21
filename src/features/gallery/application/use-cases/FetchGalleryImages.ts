@@ -1,4 +1,3 @@
-// Application: Use-case to fetch images
 import type { GalleryRepository } from '../../infrastructure/repositories/GalleryRepository'
 import type { ImageProps } from '../../domain/entities/Image'
 

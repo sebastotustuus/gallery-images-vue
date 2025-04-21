@@ -153,7 +153,9 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
   flex-direction: column;
   border-radius: 16px;
   overflow: hidden;
-  background-color: var(--color-bg-primary);
+  background-color: var(--color-bg-tertiary);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 .close-button {
@@ -173,7 +175,7 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 
 .image-container {
   width: 100%;
-  background-color: var(--color-bg-secondary);
+  background-color: rgba(0, 0, 0, 0.025);
   display: flex;
   justify-content: start;
   align-items: center;
@@ -191,10 +193,11 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 
 .info-container {
   padding: 24px;
-  background-color: var(--color-bg-primary);
+  background-color: var(--color-bg-tertiary);
   display: flex;
   flex-direction: column;
   height: 100%;
+  border-left: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .modal-header {
@@ -269,7 +272,7 @@ const { authorInitials, dimensions, ratioInfo } = useImageDetails(currentImage)
 }
 
 .specs-list {
-  background-color: var(--color-bg-tertiary);
+  background-color: var(--color-bg-primary);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 16px;

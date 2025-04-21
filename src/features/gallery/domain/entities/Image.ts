@@ -1,4 +1,3 @@
-// Domain Entity: Image
 export interface ImageProps {
   id: string;
   author: string;
@@ -23,5 +22,4 @@ export class Image {
   get downloadUrl() {
     return this.props.download_url;
   }
-  // Add domain logic methods as needed
 }
